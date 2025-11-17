@@ -1,0 +1,55 @@
+# Go build / test outputs
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+*.coverprofile
+
+# Build directories (common locations for project binaries)
+bin/
+build/
+_dist/
+_build/
+out/
+
+# Package objects and temporary files
+pkg/
+obj/
+
+# Vendor directory (uncomment if you don't check vendor into VCS)
+# vendor/
+
+# Go workspace and env files
+go.work
+go.work.sum
+.env
+.env.local
+.env.*.local
+
+# IDE / editor files
+.idea/
+.vscode/
+*.swp
+*~
+.project
+.metadata
+*.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Go tool cache / plugins (often outside repo, but ignore if present)
+.gopath/
+.gocache/
+.goland/
+.gopls/
+
+# Generated files
+*_gen.go
+*.generated.go
