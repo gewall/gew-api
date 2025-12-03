@@ -26,6 +26,6 @@ Provides URL shortening, redirects, optional custom slugs, and basic analytics.
 ## 🛠️ Installation
 Clone the repository:
 ```bash
-git clone https://github.com/yourname/shortlink-server.git
-cd shortlink-server/server
+git clone https://github.com/gewall/gew-api.git
+cd gew-api
 go mod tidy
