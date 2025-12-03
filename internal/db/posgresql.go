@@ -33,5 +33,14 @@ func Init() *gorm.DB {
 
 	fmt.Print("Database Connected!")
 
+	// model.DropUsers(gormDb)
+	// model.MigrateUsers(gormDb)
+
+	// model.DropToken(gormDb)
+	// model.MigrateToken(gormDb)
+
+	// model.DropLink(gormDb)
+	// model.MigrateLink(gormDb)
+
 	return gormDb
 }

@@ -3,7 +3,8 @@ package main
 import (
 	"gew/internal/config"
 	"gew/internal/db"
-	"gew/internal/handler"
+	"gew/internal/http/handler"
+
 	"gew/internal/repository"
 	"gew/internal/service"
 	"log"
@@ -11,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/jwtauth/v5"
 	"github.com/go-chi/render"
 )
 
@@ -25,6 +27,7 @@ func (res *Response) Render(w http.ResponseWriter, r *http.Request) error {
 
 func main() {
 	err := config.LoadEnv()
+
 	if err != nil {
 		log.Fatalf("Something wrong with the env: %s", err.Error())
 	}
@@ -40,12 +43,28 @@ func main() {
 		})
 	})
 
-	// user Route
+	// user route setup
 	userRepo := repository.NewUser(postgresqlDb)
-	// auth Route
-	authSvc := service.NewAuth(userRepo)
-	authHdr := handler.NewAuth(authSvc)
-	r.Route("/auth", authHdr.AuthRoute)
+	tokenRepo := repository.NewToken(postgresqlDb)
+	linkRepo := repository.NewLink(postgresqlDb)
+	// auth route setup
+	authHdr := handler.NewAuth(service.NewAuth(userRepo, tokenRepo))
+	// link route setup
+	linkhdr := handler.NewLink(service.NewLink(linkRepo))
+
+	// public route
+	r.Group(func(r chi.Router) {
+		r.Route("/auth", authHdr.AuthRoute)
+		r.Route("/link", linkhdr.PublicLinkRoute)
+	})
+	// private route
+	r.Route("/v1", func(r chi.Router) {
+		tokenAuth := config.JwtMiddleware()
+		r.Use(jwtauth.Verifier(tokenAuth))
+		r.Use(jwtauth.Authenticator(tokenAuth))
+
+		r.Route("/link", linkhdr.PrivateLinkRoute)
+	})
 
 	http.ListenAndServe(":8080", r)
 }
